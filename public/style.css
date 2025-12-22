@@ -302,20 +302,3 @@ h1 {
 .reproductor iframe {
     height: 500px;
 }
-
-/* CSS footer */
-
-footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin: auto;
-    background-color: #8d7cfe;
-    border-radius: 10px;
-    width: 80%;
-    flex-wrap: wrap;
-    padding-top: 30px;
-    padding-bottom: 30px;
-}
