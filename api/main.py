@@ -39,3 +39,5 @@ async def anime(anime: Anime):
     animeAPP = appAnime2.Anime()
     return {"Url": animeAPP.select_cap(anime.nombre_anime, anime.selectEP)}
 
+app = program
+
