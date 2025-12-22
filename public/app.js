@@ -143,3 +143,5 @@ function selectServer(url) {
     const iframe = document.getElementsByTagName("iframe")[0];
     iframe.src = url;
 }
+
+/* Actualizar vercel por dios */
