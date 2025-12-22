@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from fastapi.staticfiles import StaticFiles
+import os
 
 app = FastAPI()
 
@@ -33,6 +34,5 @@ async def anime(anime: Anime):
     animeAPP = appAnime2.Anime()
     return {"Url": animeAPP.select_cap(anime.nombre_anime, anime.selectEP)}
 
-app.mount("/", StaticFiles(directory="public", html=True), name="public")
-
-
+if os.path.exists("public"):
+    app.mount("/", StaticFiles(directory="public", html=True), name="public")
