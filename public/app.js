@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         reproductor.innerHTML = "";
 
         try {
-            const respuesta = await fetch("http://127.0.0.1:8000/BuscarAnime", {
+            const respuesta = await fetch("/api/BuscarAnime", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         cards.forEach(card => {
             card.addEventListener("click", async function () {
                 console.log(card.innerText);
-                const respuesta = await fetch("http://127.0.0.1:8000/SeleccionAnime", {
+                const respuesta = await fetch("/api/SeleccionAnime", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function selectCap(anime, ep) {
     console.log(anime, ep.textContent);
-    const respuesta = await fetch("http://127.0.0.1:8000/SeleccionCap", {
+    const respuesta = await fetch("/api/SeleccionCap", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
