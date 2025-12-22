@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const isTablet = window.matchMedia("(max-width: 1024px)").matches;
+
+    if (isMobile || isTablet) {
+        alert("Aviso: La web no tiene ads por default, pero los reproductores si. Para mejor experiencia use Brave Browser o similares.");
+    }
+
     document.getElementById("animeSearch").addEventListener("submit", async function (e) {
         e.preventDefault();
 
