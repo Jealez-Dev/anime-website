@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from contextlib import asynccontextmanager
 
 program = FastAPI()
 
@@ -17,12 +16,6 @@ program.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@asynccontextmanager
-async def lifespan(program: FastAPI):
-    yield
-    animeAPP = appAnime2.Anime()
-    animeAPP.close()
 
 @program.post("/BuscarAnime")
 async def anime(anime: Anime):
