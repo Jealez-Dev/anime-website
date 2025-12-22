@@ -17,17 +17,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/BuscarAnime")
+@app.post("/api/BuscarAnime")
 async def anime(anime: Anime):
     animeAPP = appAnime2.Anime()
     return {"listado": animeAPP.listado_anime(anime.nombre_anime)}
 
-@app.post("/SeleccionAnime")
+@app.post("/api/SeleccionAnime")
 async def anime(anime: Anime):
     animeAPP = appAnime2.Anime()
     return {"Informacion": animeAPP.select_anime(anime.nombre_anime)}
 
-@app.post("/SeleccionCap")
+@app.post("/api/SeleccionCap")
 async def anime(anime: Anime):
     animeAPP = appAnime2.Anime()
     return {"Url": animeAPP.select_cap(anime.nombre_anime, anime.selectEP)}
