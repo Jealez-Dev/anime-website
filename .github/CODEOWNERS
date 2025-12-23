@@ -1,0 +1,8 @@
+# -----------------------------------------------------------------------------
+# ARCHIVO DE PROPIETARIOS DE CÓDIGO (CODEOWNERS)
+# -----------------------------------------------------------------------------
+
+# 1. DUEÑO GLOBAL 
+# Se le asignará cualquier Pull Request que no coincida con reglas específicas.
+* @Jealez-Dev
+
