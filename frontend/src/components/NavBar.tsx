@@ -20,7 +20,7 @@ function NavBar() {
             <nav className="header-nav">
                 <ul className="header-nav-list">
                     <li><Link to="/">Inicio</Link></li>
-                    <li><Link to="/browse">Directorio</Link></li>
+                    <li><Link to="/construction">Directorio</Link></li>
                 </ul>
                 <form onSubmit={handleSearch} className="header-search">
                     <input type="text" id="search" className="header-search-input" placeholder="Buscar" value={search} onChange={(e) => setSearch(e.target.value)}></input>

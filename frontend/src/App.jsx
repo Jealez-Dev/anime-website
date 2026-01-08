@@ -6,6 +6,7 @@ import Directorio from './pages/directorio';
 import AnimeDetalle from './pages/anime';
 import Reproductor from './pages/ver';
 import NavBar from './components/NavBar';
+import Construction from './pages/construction';
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
 
         {/* Ruta para manejar errores 404 */}
         <Route path="*" element={<h1>404 - No encontrado</h1>} />
+        <Route path="/construction" element={<Construction />} />
       </Routes>
     </>
   );
