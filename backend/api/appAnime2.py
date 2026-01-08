@@ -16,6 +16,7 @@ class Anime():
             listadoAnimes = []
             titulos = []
             imgs = []
+            links = []
 
             if response.status_code == 200:
                 html = response.text
@@ -25,12 +26,20 @@ class Anime():
                     titulo = titulo.group(1)
                     titulos.append(titulo)
 
-                imgMatch = re.finditer(r'<img src="(.*?)" alt="(.*?)">', html, re.DOTALL)
+                imgMatch = re.finditer(r'<img src="https://animeflv.net/uploads/animes/covers/(.*?)" alt="(.*?)">', html, re.DOTALL)
                 for img in imgMatch:
                     img = img.group(1)
-                    imgs.append(img)
+                    url_img = f"https://animeflv.net/uploads/animes/covers/{img}"
+                    imgs.append(url_img)
 
-                listadoAnimes = ({"Titulo": titulos, "Img": imgs})
+                linkMatch = re.finditer(r'<a href="/anime/(.*?)">', html, re.DOTALL)
+                for link in linkMatch:
+                    link = link.group(1)
+                    links.append(link)
+
+                listadoAnimes = ({"Titulo": titulos, "Img": imgs, "Link": links})
+
+
                 return listadoAnimes
             else:
                 print("Error al obtener la página web")
@@ -43,7 +52,7 @@ class Anime():
 
     def select_anime(self, name_anime):
         try:
-            name = self.name_to_url(name_anime)
+            name = name_anime
             info = []
             response = requests.get(f"https://www3.animeflv.net/anime/{name}")
 
@@ -51,6 +60,7 @@ class Anime():
             sipnosis1 = []
             imgs = []
             listEps = []
+            screenshots = []
 
             if response.status_code == 200:
                 html = response.text
@@ -70,41 +80,58 @@ class Anime():
                         i = i.group(1)
                         imgs.append(f"https://www3.animeflv.net/{i}")
 
+                anime_idFLV = re.finditer(r'var anime_info = (.*?);', html, re.DOTALL)
+                for anime in anime_idFLV:
+                    anime = anime.group(1)
+                    anime = json.loads(anime)
+                    anime_id = anime[0]
+
+                numEp = []
                 episodres = re.finditer(r'var episodes = (.*?);', html, re.DOTALL)
                 if episodres:
                    for ep in episodres:
                        ep = json.loads(ep.group(1))
                        
-                       numEp = [f"Episodio {e[0]}" for e in ep]
-                       numEp.reverse()
-                       listEps.append(numEp)
+                       for num in ep:
+                           num = num[0]
+                           numEp.append(num)
+                           screenUrl = f"https://cdn.animeflv.net/screenshots/{anime_id}/{num}/th_3.jpg"
+                           screenshots.append(screenUrl)
+
+                numEp.reverse()
+                screenshots.reverse()
+                listEps.append({"Num": numEp, "Screen": screenshots})
+
+                anime_title = re.finditer(r'<h1 class="Title">(.*?)</h1>', html, re.DOTALL)
+                for title in anime_title:
+                    title = title.group(1)
+                    titulo = title
+
 
             info.append({"Titulo": titulo, "Sipnosis": sipnosis1, "Img": imgs, "Cap": listEps})
             return info 
         except Exception as e:
             print(e)
         
-    def select_cap(self, name_anime, selectEP):
+    def select_cap(self, name_anime):
         try:
-            name = self.name_to_url(name_anime)
-
-            EPnum = selectEP.replace("Episodio ", "")
-            EPnum = int(EPnum.replace(" ", ""))
 
             info = []
-            response = requests.get(f"https://www3.animeflv.net/ver/{name}-{EPnum}")
-            print(f"https://www3.animeflv.net/ver/{name}-{EPnum}")
+            response = requests.get(f"https://www3.animeflv.net/ver/{name_anime}")
+            print(name_anime)
 
             if response.status_code == 200:
                 print("¡Conexión exitosa! El navegador se abrió correctamente.")
                 html = response.text
 
-                servidores = re.finditer(r'var videos = (.*?);', html, re.DOTALL)
-                for s in servidores:
-                    s = s.group(1)
-                    s = json.loads(s)
-                    print(s)
-                    info.append(s)
+                servidores = re.search(r'var videos = (.*?);', html, re.DOTALL)
+                datos = json.loads(servidores.group(1))
+
+                lista_servidores = datos.get('SUB', [])
+
+                for s in lista_servidores:
+                    info.append({"nombre": s.get('title'), "url": s.get('code')})
+
             else:
                 print("Error al obtener la página web", response.status_code)
                 
@@ -191,5 +218,3 @@ class Anime():
         except Exception as e:
             print(e)
 
-anime = Anime()
-anime.animes_Recientes()
