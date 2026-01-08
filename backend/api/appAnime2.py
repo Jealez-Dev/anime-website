@@ -169,9 +169,14 @@ class Anime():
                         descripcion = match.group(1)
                         break
 
+                link = ""
+                linkMatch = re.finditer(rf'<a href="(/anime/[^"]+)"[^>]*>(?:(?!<a href=").)*?alt="{titulo_random}"', html, re.DOTALL)
+                for link in linkMatch:
+                    link = link.group(1).replace("/anime/", "")
+                    break
 
                 info = []
-                info.append({"Titulo": titulo_random, "Sipnosis": descripcion, "Img": portada})
+                info.append({"Titulo": titulo_random, "Sipnosis": descripcion, "Img": portada, "Link": link})
                 return info 
             else:
                 print("Error al obtener la página web")
@@ -200,8 +205,14 @@ class Anime():
                     img_url = match.group(1)
                     portadas.append(f"https://www3.animeflv.net{img_url}")
 
+                links = []
+                linkMatch = re.finditer(r'<a class="[^>]*" href="/anime/(.*?)">', html, re.DOTALL)
+                for link in linkMatch:
+                    link = link.group(1)
+                    links.append(link)
+
                 info = []
-                info.append({"Titulo": titulos, "Img": portadas})
+                info.append({"Titulo": titulos, "Img": portadas, "Link": links})
                 return info 
             else:
                 print("Error al obtener la página web")

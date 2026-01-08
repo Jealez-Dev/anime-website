@@ -1,15 +1,18 @@
 import '../style.css'
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface AnimeRandom {
     Titulo: string;
     Img: string;
     Sipnosis: string;
+    Link: string;
 }
 
 interface AnimeRecientes {
     Titulo: string;
     Img: string;
+    Link: string;
 }
 
 function Home() {
@@ -17,6 +20,7 @@ function Home() {
     const [animeRandom, setAnimeRandom] = useState<AnimeRandom[]>([]);
     const [recientes, setRecientes] = useState<AnimeRecientes[]>([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     const Hero = async () => {
         const respuesta = await fetch('/api/AnimeRandom', {
@@ -46,6 +50,7 @@ function Home() {
                     id: index,
                     Titulo: anime,
                     Img: data.Informacion[0].Img[index],
+                    Link: data.Informacion[0].Link[index],
                 }));
 
                 setRecientes(recientes);
@@ -71,7 +76,7 @@ function Home() {
                                 <div className="hero-text">
                                     <h2 className="anime-title">{animeRandom[0].Titulo}</h2>
                                     <p className="anime-subtitle">{animeRandom[0].Sipnosis}</p>
-                                    <button className="hero-button">Ver</button>
+                                    <button className="hero-button" onClick={() => navigate(`/anime/${animeRandom[0].Link}`)}>Ver</button>
                                 </div>
                             </>
                         )}
@@ -87,7 +92,7 @@ function Home() {
                             {recientes.length > 0 && (
                                 recientes.map((anime) => (
                                     console.log(anime),
-                                    <li className='recientes-item' key={anime.Titulo}>
+                                    <li className='recientes-item' key={anime.Titulo} onClick={() => navigate(`/anime/${anime.Link}`)}>
                                         <img src={anime.Img} alt={anime.Titulo}></img>
                                         <p>{anime.Titulo}</p>
                                     </li>
