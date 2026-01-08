@@ -19,6 +19,10 @@
             "destination": "backend/api/main.py"
         },
         {
+            "source": "/assets/(.*)",
+            "destination": "/frontend/assets/$1"
+        },
+        {
             "source": "/((?!api/).*)",
             "destination": "/frontend/index.html"
         }
