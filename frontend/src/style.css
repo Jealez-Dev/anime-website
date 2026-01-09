@@ -692,4 +692,63 @@ body {
         margin-left: 1rem;
     }
 
+
+    /* /ver modal */
+
+    .player-container {
+        background-image: linear-gradient(to right, rgba(45, 20, 94, 0.9), rgba(43, 16, 119, 0.6)), url('https://cdna.artstation.com/p/assets/images/images/044/884/542/large/alexey-anufriev-customplaymat3.jpg?1641398172');
+    }
+
+    .modal {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        margin-left: 2rem;
+        margin-right: 2rem;
+        background-color: #090820;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content h2 {
+        font-family: "Google Sans", sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .modal-content p {
+        font-family: "Google Sans", sans-serif;
+        font-weight: 500;
+        font-size: 1rem;
+        text-align: justify;
+    }
+
+    .modal-content svg {
+        margin: auto;
+        padding: 40px;
+        animation: rotate 2s ease-in-out infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        50% {
+            transform: rotate(90deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
+    }
 }
