@@ -18,7 +18,6 @@ function anime() {
     const [madurez, setMadurez] = useState('');
     const [score, setScore] = useState('');
     const [loading, setLoading] = useState(true);
-    console.log(id);
 
     const fetchAnimes = async () => {
         fetch(`/api/SeleccionAnime`, {
@@ -34,7 +33,6 @@ function anime() {
                 const info_capitulos = data.Informacion[0].Cap[0];
                 setCap(info_capitulos.Num);
                 setScreenshots(info_capitulos.Screen);
-                console.log(info_capitulos);
                 setLoading(false);
             })
     };
@@ -48,7 +46,6 @@ function anime() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data.data[0].images.webp.large_image_url);
                 setImagenes(data.data[0].images.webp.large_image_url);
                 setMadurez(data.data[0].rating);
                 setScore(data.data[0].score);

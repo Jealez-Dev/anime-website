@@ -33,7 +33,6 @@ function ver() {
         })
             .then(response => response.json())
             .then((data) => {
-                console.log(data)
                 setUrls(data.Url)
                 setLoading(false);
             });
@@ -106,23 +105,16 @@ function ver() {
         const NumBase = parseInt(slugOriginal.match(/\d+$/)?.[0] || "0");
         const cantCap = Capitulos || 0
 
-        console.log(NumBase)
-        console.log(cantCap)
-
         if (NumBase == cantCap) {
             disablebtnNew?.classList.add('nothing')
-            console.log('disablebtnNew')
         } else {
             disablebtnNew?.classList.remove('nothing')
-            console.log('enablebtnNew')
         }
 
         if (NumBase == 1) {
             disablebtnBack?.classList.add('nothing')
-            console.log('disablebtnBack')
         } else {
             disablebtnBack?.classList.remove('nothing')
-            console.log('enablebtnBack')
         }
 
     }

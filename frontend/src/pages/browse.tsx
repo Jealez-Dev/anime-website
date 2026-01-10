@@ -13,7 +13,6 @@ function Browse() {
     const q = searchParams.get('q');
     const [animes, setAnimes] = useState<Anime[]>([]);
     const [loading, setLoading] = useState(true);
-    console.log(q);
 
     useEffect(() => {
         const fetchAnimes = async () => {
@@ -26,19 +25,16 @@ function Browse() {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log(data);
                     const list = data.listado.Titulo.map((anime: string, index: number) => ({
                         id: index,
                         Titulo: anime,
                         Img: data.listado.Img[index],
                         Link: data.listado.Link[index],
                     }))
-                    console.log(list);
                     setAnimes(list);
                     setLoading(false);
                 })
                 .catch((error) => {
-                    console.error(error);
                     setLoading(false);
                 });
         };
@@ -53,7 +49,6 @@ function Browse() {
             ) : (
                 <ul className="Anime-List">
                     {animes.map((anime) => (
-                        console.log(anime),
                         <li key={anime.Titulo} className="recientes-item">
                             <a href={`/anime/${anime.Link}`}>
                                 <img src={anime.Img} alt={anime.Titulo}></img>
