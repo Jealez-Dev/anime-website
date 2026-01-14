@@ -29,7 +29,7 @@ function ver() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ nombre_anime: id }),
+            body: JSON.stringify({ nombre_anime: id?.slice(0, id.lastIndexOf('-')) || '', selectEP: id }),
         })
             .then(response => response.json())
             .then((data) => {
