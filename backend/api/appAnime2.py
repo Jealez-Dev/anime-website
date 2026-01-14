@@ -3,6 +3,7 @@ import re
 import json
 import random
 import cloudscraper
+from curl_cffi import requests as curl_requests
 
 
 class Anime():
@@ -142,24 +143,7 @@ class Anime():
 
     def calidad_1080(self, name_anime):
         try:
-            response = cloudscraper.create_scraper(browser={
-                'browser': 'chrome',
-                'platform': 'windows',
-                'desktop': True
-            }, delay=15)
-
-            headers = {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                "Accept-Language": "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3",
-                "Connection": "keep-alive",
-                "Upgrade-Insecure-Requests": "1",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "none",
-                "Sec-Fetch-User": "?1",
-            }
-            
-            response = response.get(f"https://jkanime.net/{name_anime}", headers=headers)
+            response = curl_requests.get(f"https://jkanime.net/{name_anime}", impersonate="chrome110", timeout=15)
             print(f"https://jkanime.net/{name_anime}")
 
             if response.status_code == 200:
@@ -178,24 +162,7 @@ class Anime():
     
     def Caps_1080(self, name_anime, cap):
         try:
-            response = cloudscraper.create_scraper(browser={
-                'browser': 'chrome',
-                'platform': 'windows',
-                'desktop': True
-            }, delay=15)
-
-            headers = {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                "Accept-Language": "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3",
-                "Connection": "keep-alive",
-                "Upgrade-Insecure-Requests": "1",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "none",
-                "Sec-Fetch-User": "?1",
-            }
-            
-            response = response.get(f"https://jkanime.net/{name_anime}/{cap}", headers=headers)
+            response = curl_requests.get(f"https://jkanime.net/{name_anime}", impersonate="chrome110", timeout=15)
             html = response.text
 
             if response.status_code == 200:
