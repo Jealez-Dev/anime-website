@@ -5,6 +5,7 @@ import random
 import cloudscraper
 from curl_cffi import requests as curl_requests
 from dotenv import load_dotenv
+import os
 
 
 class Anime():
