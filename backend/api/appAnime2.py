@@ -26,7 +26,6 @@ class Anime():
             }
             response = requests.get(f"https://www3.animeflv.net/browse", params=params)
             print(response.url)
-            open("response.html", "w", encoding="utf-8").write(response.text)
             print("¡Conexión exitosa! El navegador se abrió correctamente.")
             listadoAnimes = []
             titulos = []
