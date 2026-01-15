@@ -17,6 +17,9 @@ function anime() {
     const [imagenes, setImagenes] = useState([]);
     const [madurez, setMadurez] = useState('');
     const [score, setScore] = useState('');
+    const [calidad, setCalidad] = useState('');
+    const [estado, setEstado] = useState('');
+    const [fecha, setFecha] = useState('');
     const [loading, setLoading] = useState(true);
 
     const fetchAnimes = async () => {
@@ -33,11 +36,14 @@ function anime() {
                 const info_capitulos = data.Informacion[0].Cap[0];
                 setCap(info_capitulos.Num);
                 setScreenshots(info_capitulos.Screen);
+                setCalidad(data.Calidad);
+                setEstado(data.Estado);
+                setFecha(data.Fecha);
                 setLoading(false);
             })
     };
 
-    const fetchWallpaper = async () => {
+    const fetchDatosAnime = async () => {
         fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(id || '')}&limit=1`, {
             method: 'GET',
             headers: {
@@ -46,9 +52,26 @@ function anime() {
         })
             .then((response) => response.json())
             .then((data) => {
-                setImagenes(data.data[0].images.webp.large_image_url);
                 setMadurez(data.data[0].rating);
                 setScore(data.data[0].score);
+            })
+    };
+
+    const fetchWallpaper = async () => {
+        fetch(`https://api-anime-steel.vercel.app/meta/anilist/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const cover = data.results[0].cover
+                if (cover == null) {
+                    setImagenes(data.results[0].image)
+                } else {
+                    setImagenes(data.results[0].cover)
+                }
             })
     };
 
@@ -70,6 +93,7 @@ function anime() {
 
     useEffect(() => {
         fetchAnimes();
+        fetchDatosAnime();
         fetchWallpaper();
     }, []);
     return (
@@ -86,6 +110,7 @@ function anime() {
                                 <div className="anime-item-info">
                                     <p className="rating">Madurez: {clasificacionEdad()}</p>
                                     <p className="score">Score: {score}</p>
+                                    <p className="estado">Estado: <span className={estado ? "emitiendo" : "finish"}>{estado ? "En Emisión" : 'Finalizado'}</span></p>
                                 </div>
                                 <p>{animes[0].Sipnosis}</p>
                             </div>
@@ -99,8 +124,11 @@ function anime() {
                         </div>
                         <ul className="episodes-list">
                             {cap.map((ep, index) => (
-                                <li key={ep} onClick={() => navigate(`/ver/${id}-${ep}`)}><img src={screenshots[index]} alt={ep}></img><a>Episodio{ep}</a></li>
+                                <li key={ep} onClick={() => navigate(`/ver/${id}-${ep}`)}><img src={screenshots[index]} alt={ep}></img><a>Episodio {ep}</a></li>
                             ))}
+                            {estado ? (
+                                <li onClick={() => navigate(`#`)}><img src={animes[0].Img} alt={animes[0].Titulo}></img><a>Proximo Capitulo: {fecha.split('T')[0]}</a></li>
+                            ) : null}
                         </ul>
                     </section>
 

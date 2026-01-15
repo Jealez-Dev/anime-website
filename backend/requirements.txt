@@ -2,3 +2,7 @@ fastapi
 pydantic
 uvicorn
 requests
+python-dotenv
+cloudscraper
+supabase
+curl_cffi

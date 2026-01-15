@@ -19,6 +19,10 @@
             "destination": "backend/api/main.py"
         },
         {
+            "source": "/proxy/:path*",
+            "destination": "https://jkanime.net/:path*"
+        },
+        {
             "source": "/assets/(.*)",
             "destination": "/frontend/assets/$1"
         },

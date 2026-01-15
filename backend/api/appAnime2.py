@@ -1,22 +1,37 @@
+import cloudscraper
 import requests
 import re
 import json
 import random
+import cloudscraper
+from curl_cffi import requests as curl_requests
+from dotenv import load_dotenv
+import os
 
 
 class Anime():
     def __init__(self):
-        pass
+        load_dotenv()
 
-    def Buscar_anime(self, name_anime):
+    def Buscar_anime(self, name_anime=None, year=None, genre=None, type=None, status=None, order=None, page=None):
         try:
-            name_anime = name_anime.replace(" ", "-")
-            response = requests.get(f"https://www3.animeflv.net/browse?q={name_anime}")
+            params = {
+                "q": name_anime or None,
+                "year[]": year or None,
+                "genre[]": genre or None,
+                "type[]": type or None,
+                "status[]": status or None,
+                "order": order or None,
+                "page": page or None
+            }
+            response = requests.get(f"https://www3.animeflv.net/browse", params=params)
+            print(response.url)
             print("¡Conexión exitosa! El navegador se abrió correctamente.")
             listadoAnimes = []
             titulos = []
             imgs = []
             links = []
+            TotalPage = 0
 
             if response.status_code == 200:
                 html = response.text
@@ -37,12 +52,18 @@ class Anime():
                     link = link.group(1)
                     links.append(link)
 
-                listadoAnimes = ({"Titulo": titulos, "Img": imgs, "Link": links})
+                pageMatch = re.findall(r'[?&]page=(\d+)(?="|&)', html, re.DOTALL)
+                if not pageMatch:
+                   TotalPage = 1
+                
+                TotalPage = max([int(page) for page in pageMatch])
+
+                listadoAnimes = ({"Titulo": titulos, "Img": imgs, "Link": links, "Page": TotalPage})
 
 
                 return listadoAnimes
             else:
-                print("Error al obtener la página web")
+                print("Estado de la pagina web: ", response.status_code)
             
         except Exception as e:
             print(e)
@@ -107,15 +128,29 @@ class Anime():
                     title = title.group(1)
                     titulo = title
 
+                print("Date fa-calendar" in html) # ¿Existe la clase?
 
-            info.append({"Titulo": titulo, "Sipnosis": sipnosis1, "Img": imgs, "Cap": listEps})
+                date_next_ep = ""
+                estado = re.search(r'<span class="fa-tv">(.*?)</span>', html)
+                estado = estado.group(1)
+                print(estado)
+                if estado == "En emision":
+                    print("paso por aca")
+                    date_next_ep = re.search(r'var\s+anime_info\s*=\s*(\[.*?\]);', html, re.DOTALL)
+                    date_next_ep = date_next_ep.group(1).strip()
+                    date_next_ep = json.loads(date_next_ep)
+                    date_next_ep = date_next_ep[3]
+                    estado = True
+                else:
+                    estado = False
+
+            info.append({"Titulo": titulo, "Sipnosis": sipnosis1, "Img": imgs, "Estado": estado, "Cap": listEps, "Date": date_next_ep})
             return info 
         except Exception as e:
             print(e)
-        
+      
     def select_cap(self, name_anime):
         try:
-
             info = []
             response = requests.get(f"https://www3.animeflv.net/ver/{name_anime}")
             print(name_anime)
@@ -132,6 +167,15 @@ class Anime():
                 for s in lista_servidores:
                     info.append({"nombre": s.get('title'), "url": s.get('code')})
 
+                serverHD = self.servidoresHDAnimeFelix(name_anime)
+                for item in serverHD:
+                    if "mp4upload.com" in item.get('url'):
+                        info.append({"nombre": "Mp4upload 1080p", "url": item.get('url')})
+                    elif "ironhentai.com" in item.get('url'):
+                        if item.get('server_index') == "1":
+                            info.append({"nombre": "Ironhentai 1080p", "url": item.get('url')})
+
+                return info
             else:
                 print("Error al obtener la página web", response.status_code)
                 
@@ -159,7 +203,6 @@ class Anime():
                     i = i.group(1)
                     portada = f"https://www3.animeflv.net/{i}"
 
-                sipnosis = ""
                 sipnosisMatch = re.finditer(r'<div class="Description">.*?<p>.*?</p>.*?<p>(.*?)</p>', html, re.DOTALL)
                 
                 descripcion = ""
@@ -216,5 +259,42 @@ class Anime():
                 return info 
             else:
                 print("Error al obtener la página web")
+        except Exception as e:
+            print(e)
+
+    def servidoresHDAnimeFelix(self, name_anime):
+        try:
+            scraper = cloudscraper.create_scraper()
+
+            response = scraper.get(f"https://animefenix2.tv/ver/{name_anime}")
+            if response.status_code == 200:
+                html = response.text
+
+                pattern = r"tabsArray\['(\d+)'\]\s*=\s*\"(.*?)\";"
+                matches = re.findall(pattern, html)
+
+                links_encontrados = []
+
+                if not matches:
+                    print("No se encontraron servidores. Verifica el acceso al HTML.")
+                else:
+                    for index, iframe_html in matches:
+                        # 2. Extraemos el 'src' dentro del string del iframe
+                        src_match = re.search(r"src='(.*?)'", iframe_html)
+                        if src_match:
+                            full_src = src_match.group(1)
+            
+                            # 3. Limpiamos el link de redirección para obtener la fuente real
+                            # El link real está después de 'id='
+                            if 'redirect.php?id=' in full_src:
+                                real_source = full_src.split('redirect.php?id=')[-1]
+                                links_encontrados.append({
+                                    "server_index": index,
+                                    "url": real_source
+                                })
+
+                return links_encontrados
+            else:
+                print("Error al obtener la página web", response.status_code)
         except Exception as e:
             print(e)

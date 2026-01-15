@@ -29,16 +29,17 @@ function ver() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ nombre_anime: id }),
+            body: JSON.stringify({ nombre_anime: id?.slice(0, id.lastIndexOf('-')) || '', selectEP: id }),
         })
             .then(response => response.json())
             .then((data) => {
                 setUrls(data.Url)
+                setCapitulos(data.CantCap)
                 setLoading(false);
             });
     };
 
-    const fetchCapitulos = async (anime: string) => {
+    const fetchTitulo = async (anime: string) => {
         fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(anime || '')}&limit=1`, {
             method: 'GET',
             headers: {
@@ -47,7 +48,6 @@ function ver() {
         })
             .then((response) => response.json())
             .then((data) => {
-                setCapitulos(data.data[0].episodes)
                 setTitulo(data.data[0].title)
                 setLoading(false);
             })
@@ -139,7 +139,8 @@ function ver() {
 
     useEffect(() => {
         fetchCap();
-        fetchCapitulos(id ? id?.slice(0, id.lastIndexOf('-')) : '');
+        fetchTitulo(id ? id?.slice(0, id.lastIndexOf('-')) : '');
+        setLoading(true)
     }, [id, episodio]);
 
     useEffect(() => {
@@ -163,6 +164,7 @@ function ver() {
         return () => { clearTimeout(timer); window.removeEventListener('mousemove', showBtns) }
 
     }, []);
+
 
     useEffect(() => {
         window.addEventListener('resize', () => setIsMobile(mediaQuery.matches))
