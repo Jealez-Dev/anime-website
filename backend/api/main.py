@@ -117,6 +117,11 @@ async def anime(anime: Anime):
         cantCap = supabase.table("animes").select("Capitulos").eq("slug", anime.nombre_anime).maybe_single().execute()
         return {"Url": links, "CantCap": cantCap.data["Capitulos"]}
 
+@app.post("/api/CantCap")
+async def anime(anime: Anime):
+    cantCap = supabase.table("animes").select("Capitulos").eq("slug", anime.nombre_anime).maybe_single().execute()
+    return {"CantCap": cantCap.data["Capitulos"]}
+
 @app.get("/api/AnimeRandom")
 async def anime():
     animeAPP = appAnime2.Anime()

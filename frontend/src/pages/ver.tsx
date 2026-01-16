@@ -34,8 +34,21 @@ function ver() {
             .then(response => response.json())
             .then((data) => {
                 setUrls(data.Url)
-                setCapitulos(data.CantCap)
                 setLoading(false);
+            });
+    };
+
+    const fetchCantCap = () => {
+        fetch('/api/CantCap', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nombre_anime: id?.slice(0, id.lastIndexOf('-')) || '' }),
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setCapitulos(data.CantCap)
             });
     };
 
@@ -139,9 +152,16 @@ function ver() {
 
     useEffect(() => {
         fetchCap();
-        fetchTitulo(id ? id?.slice(0, id.lastIndexOf('-')) : '');
         setLoading(true)
     }, [id, episodio]);
+
+    useEffect(() => {
+        fetchCantCap();
+    }, []);
+
+    useEffect(() => {
+        fetchTitulo(id ? id?.slice(0, id.lastIndexOf('-')) : '');
+    }, []);
 
     useEffect(() => {
 
